@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-export const useSpotifySearchMutation = (query: string, searchType: string) => {
+export const useSpotifySearchQuery = (query: string, searchType: string) => {
   return useQuery({
     queryKey: ["spotifySearch", query, searchType],
     queryFn: async () => {
