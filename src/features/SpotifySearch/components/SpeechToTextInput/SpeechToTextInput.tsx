@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { getInputValue } from "./utils/getInputValue";
 import { tailwindMerge } from "@/utils/tailwind/tailwindMerge";
 import { Mic, MicOff } from "lucide-react";
-import { UseMutateFunction } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { Radio } from "./components/Radio";
 
 /**
  * Hook that let's you leverage the speech recognition API
@@ -123,20 +123,9 @@ export const SpeechToTextInput = () => {
         }}
       >
         <fieldset className="flex gap-4">
-          {/* NOTE: I know that I should move this search-type logic into it's own separate component. */}
-          {/* If this is still in the codebase like this that means I ran out of time this weekend. */}
-          <label className="flex flex-col items-start">
-            <span>Artist</span>
-            <input type="radio" name="search-type" value="artist" />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Album</span>
-            <input type="radio" name="search-type" value="album" />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Song</span>
-            <input type="radio" name="search-type" value="track" />
-          </label>
+          <Radio name="search-type" label="Artist" value="artist" />
+          <Radio name="search-type" label="Album" value="album" />
+          <Radio name="search-type" label="Song" value="track" />
         </fieldset>
         <div className="relative ">
           <input
@@ -161,7 +150,7 @@ export const SpeechToTextInput = () => {
                 toggleListening();
               }}
               className={tailwindMerge("absolute right-0 h-full p-2", {
-                "bg-red-500": !isListening,
+                transparent: !isListening,
                 "bg-green-500": isListening,
               })}
             >
@@ -174,6 +163,15 @@ export const SpeechToTextInput = () => {
           type="submit"
         >
           Search
+        </button>
+        <button
+          className="hover:cursor-pointer bg-red-500 p-2 w-full"
+          type="button"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Clear search
         </button>
       </form>
     </div>
