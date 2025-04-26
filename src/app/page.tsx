@@ -1,14 +1,11 @@
-import { Overview } from "@/features/Overview/Overview";
-import { SpeechToTextInput } from "@/features/SpeechToTextInput/SpeechToTextInput";
+import { SpotifySearch } from "@/features/SpotifySearch/SpotifySearch";
 
 export default function Home() {
   return (
     <div>
       <main>
-        <SpeechToTextInput />
-        <Overview />
+        <SpotifySearch />
       </main>
-      <footer>Footer</footer>
     </div>
   );
 }

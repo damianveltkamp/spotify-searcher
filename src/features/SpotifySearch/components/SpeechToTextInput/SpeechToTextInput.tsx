@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { getInputValue } from "./utils/getInputValue";
 import { tailwindMerge } from "@/utils/tailwind/tailwindMerge";
 import { Mic, MicOff } from "lucide-react";
-import { useSpotifySearchMutation } from "@/queries/useSpotifySearch";
+import { UseMutateFunction } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 
 /**
  * Hook that let's you leverage the speech recognition API
@@ -82,8 +83,10 @@ const useSpeechRecognition = () => {
 
   return {
     isSupportedFeature,
-    transcript,
-    interimTranscript,
+    // NOTE: we transform the string to lowercase so that we have better caching with tanstack query.
+    // sometimes when doing the text to speech for the same word it capitalizes, so we should normalize to lowercase.
+    transcript: transcript.toLowerCase(),
+    interimTranscript: interimTranscript.toLowerCase(),
     isListening,
     toggleListening,
     resetRecognitionState,
@@ -91,6 +94,7 @@ const useSpeechRecognition = () => {
 };
 
 export const SpeechToTextInput = () => {
+  const router = useRouter();
   const {
     isSupportedFeature,
     transcript,
@@ -100,14 +104,22 @@ export const SpeechToTextInput = () => {
     resetRecognitionState,
   } = useSpeechRecognition();
   const [inputValue, setInputValue] = useState("");
-  const { mutate } = useSpotifySearchMutation();
 
   return (
-    <div className="p-4 rounded shadow max-w-md mx-auto mt-10 bg-white">
+    <div className="w-full p-4 rounded shadow max-w-md mx-auto mt-10 bg-white">
       <form
         className="flex gap-4 flex-col"
         action={async (formData) => {
-          mutate(formData);
+          const query = formData.get("query") as string;
+          const searchType = formData.get("search-type") as string;
+          router.push(
+            `/?q=${encodeURIComponent(query)}&type=${encodeURIComponent(searchType)}`,
+          );
+
+          // NOTE: after submitting the form I want to clear the input fields, so that the user could start a fresh
+          // search right away without having to clear any fields.
+          setInputValue("");
+          resetRecognitionState();
         }}
       >
         <fieldset className="flex gap-4">
@@ -148,7 +160,6 @@ export const SpeechToTextInput = () => {
                 setInputValue("");
                 toggleListening();
               }}
-              // isListening ? "bg-red-500" : "bg-green-500"
               className={tailwindMerge("absolute right-0 h-full p-2", {
                 "bg-red-500": !isListening,
                 "bg-green-500": isListening,
