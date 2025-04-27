@@ -1,16 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAccessToken } from "@/utils/spotify/getAccessToken";
-import { SPOTIFY_SEARCH_TYPES_LOOKUP_TABLE } from "@/constants/spotify";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("q");
   const type = searchParams.get("type");
 
-  // NOTE: if there is no search query provided the request is invalid, so we return 400.
   if (!query) {
     return NextResponse.json(
       { error: "Missing search query" },
+      { status: 400 },
+    );
+  }
+
+  if (!type) {
+    return NextResponse.json({ error: "Missing search type" }, { status: 400 });
+  }
+
+  if (!query && !type) {
+    return NextResponse.json(
+      { error: "Missing search query & search type" },
       { status: 400 },
     );
   }
@@ -34,6 +43,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const data = await response.json();
+  // NOTE: currently just using the SpotifyApi types provided by DefinitelyTyped since I don't expect
+  // these API's to change frequently. We could add a zod validation schema to validate at runtime if the response matches what
+  // we expect, so that if the API response has changed we will catch it.
+  const data: SpotifyApi.SearchResponse = await response.json();
   return NextResponse.json(data);
 }

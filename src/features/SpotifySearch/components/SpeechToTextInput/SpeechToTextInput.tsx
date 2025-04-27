@@ -5,6 +5,7 @@ import { tailwindMerge } from "@/utils/tailwind/tailwindMerge";
 import { Mic, MicOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Radio } from "./components/Radio";
+import { SPOTIFY_SEARCH_TYPES } from "@/constants/spotify";
 
 /**
  * Hook that let's you leverage the speech recognition API
@@ -123,9 +124,21 @@ export const SpeechToTextInput = () => {
         }}
       >
         <fieldset className="flex gap-4">
-          <Radio name="search-type" label="Artist" value="artist" />
-          <Radio name="search-type" label="Album" value="album" />
-          <Radio name="search-type" label="Song" value="track" />
+          <Radio
+            name="search-type"
+            label="Artist"
+            value={SPOTIFY_SEARCH_TYPES.ARTIST}
+          />
+          <Radio
+            name="search-type"
+            label="Album"
+            value={SPOTIFY_SEARCH_TYPES.ALBUM}
+          />
+          <Radio
+            name="search-type"
+            label="Song"
+            value={SPOTIFY_SEARCH_TYPES.TRACK}
+          />
         </fieldset>
         <div className="relative ">
           <input

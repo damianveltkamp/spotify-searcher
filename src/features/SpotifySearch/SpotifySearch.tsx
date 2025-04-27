@@ -16,7 +16,12 @@ export const SpotifySearch = () => {
   return (
     <div className="flex flex-col gap-10">
       <SpeechToTextInput />
-      <Overview data={data} isPending={isPending} isError={isError} />
+      <Overview
+        data={data}
+        searchType={searchTypeParam}
+        isPending={isPending}
+        isError={isError}
+      />
     </div>
   );
 };

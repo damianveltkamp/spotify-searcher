@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const useSpotifySearchQuery = (query: string, searchType: string) => {
-  return useQuery({
+  return useQuery<SpotifyApi.SearchResponse>({
     queryKey: ["spotifySearch", query, searchType],
     queryFn: async () => {
       const res = await fetch(
@@ -13,8 +13,6 @@ export const useSpotifySearchQuery = (query: string, searchType: string) => {
         },
       );
 
-      // TODO: fix the typescript type of this data object by doing some validation on it.
-      // Hopefully will have time to pick this up tomorrow.
       const data = await res.json();
 
       return data;
